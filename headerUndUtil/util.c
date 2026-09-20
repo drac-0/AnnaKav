@@ -3,16 +3,19 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <linux/limits.h>
+#include <time.h>
+#include <stdlib.h>
 
 short LinearComparison(u32t * fileHashed){
+      //since when i write a function name that's self explanatory?. MEH 
 
       FILE *binREAD= fopen("/home/draco/vode/AV/db/kl256.bin", "rb");
-      fseek(binREAD, 0, SEEK_END);
-      long len = ftell(binREAD);
-      rewind(binREAD);
+      fseek(binREAD, 0, SEEK_END); //move cursor to the end 
+      long len = ftell(binREAD); //count the len of a file binary contect
+      rewind(binREAD); //what the fuck?
 
-      u32t * buffer = malloc(len);
-      fread(buffer,1,len,binREAD);
+      u32t * buffer = malloc(len); //where i will write the buffer
+      fread(buffer,1,len,binREAD); //read from f, 1-len, put it to buffer
 
 
       for (int i = 0; i < 8; i++) {
@@ -23,8 +26,6 @@ short LinearComparison(u32t * fileHashed){
             }
       }
 
-      printf("OHHH THERE IS SOMETHING HERE");
-
       free(buffer);
       fclose(binREAD);
       return 1;
@@ -33,7 +34,7 @@ short LinearComparison(u32t * fileHashed){
 
 
 int dfsWalker(char *path){
-
+      time_t checkpoint = readCheckpoint();
       DIR *dir;
       struct dirent *entry;
       dir = opendir(path);
@@ -60,14 +61,14 @@ int dfsWalker(char *path){
                   struct stat file; 
                   int Fp = open(entry->d_name, O_RDONLY);
                   fstat(Fp, &file);
-
-                  if ((file.st_mode & S_IEXEC) 
+                  printf("file name : %s\n", entry->d_name);
+                  printf("last scan was %ld\n, and last file modified was %ld\n", checkpoint, file.st_mtim.tv_sec);
+                  if (((file.st_mode & S_IEXEC) 
                         || (file.st_mode & S_IXGRP)
-                        || ( file.st_mode & S_IXOTH)){
+                        || ( file.st_mode & S_IXOTH)) & (file.st_mtim.tv_sec > checkpoint)){
                         printf("file name : %s\n", entry->d_name);
                         u32t * H = HashAfile(entry->d_name);
-                        if (H != NULL){ 
-                              LinearComparison(H);
+                        if (H != NULL){ //???THE LINE THE LINE 
                               free(H);
                         }
                   }
