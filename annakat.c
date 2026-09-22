@@ -1,6 +1,6 @@
 #include "headerUndUtil/sha.h"
 
-int annaKav(){
+int main(){
       startWalking();
       Checkpoint();
 }
