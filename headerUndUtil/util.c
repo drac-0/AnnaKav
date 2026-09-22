@@ -9,7 +9,7 @@
 short LinearComparison(u32t * fileHashed){
       //since when i write a function name that's self explanatory?. MEH 
 
-      FILE *binREAD= fopen("/home/draco/vode/AV/db/kl256.bin", "rb");
+      FILE *binREAD= fopen("/home/draco/vode/AV/v0.1.0/db/kl256.bin", "rb");
       fseek(binREAD, 0, SEEK_END); //move cursor to the end 
       long len = ftell(binREAD); //count the len of a file binary contect
       rewind(binREAD); //what the fuck?
@@ -59,20 +59,21 @@ int dfsWalker(char *path){
             else if(entry->d_type == DT_REG){
 
                   struct stat file; 
-                  int Fp = open(entry->d_name, O_RDONLY);
-                  fstat(Fp, &file);
+                  stat(entry->d_name, &file);
                   printf("file name : %s\n", entry->d_name);
-                  printf("last scan was %ld\n, and last file modified was %ld\n", checkpoint, file.st_mtim.tv_sec);
                   if (((file.st_mode & S_IEXEC) 
                         || (file.st_mode & S_IXGRP)
-                        || ( file.st_mode & S_IXOTH)) & (file.st_mtim.tv_sec > checkpoint)){
+                        || ( file.st_mode & S_IXOTH)) ){
                         printf("file name : %s\n", entry->d_name);
                         u32t * H = HashAfile(entry->d_name);
                         if (H != NULL){ //???THE LINE THE LINE 
+                              if (LinearComparison(H)){
+                                    printf("%s comparing with kl256.bin\n", entry->d_name);
+                                    printf("THERE IS SOMETHING HERE %s\n", entry->d_name);
+                              };
                               free(H);
                         }
                   }
-                  close(Fp);
             }
       }
 
