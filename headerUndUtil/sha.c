@@ -233,7 +233,6 @@ u32t * HashAfile(char * path){
             close(Pp);
             return H;
       }
-
 }
 
 u32t * HashAfileByFp(int Pp, struct stat *file ){

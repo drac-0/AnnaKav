@@ -21,6 +21,24 @@ int Fp = open("log.bin", O_WRONLY)
 
 ## 3. Also the db path in Linear Comparison 
 
-# My current knowledge on what might come in the next patch/minor update
+## My current knowledge on what might come in the next patch/minor update
 
+1. The LinearComparison only comparing with one keylogger hashed bin and i have to work with that (probably will come on v0.1.3) (Nope, not in v0.1.3)
+~~2. static scan for '/etc/passwd'-alike file~~
+
+
+# v0.1.3 Weak File Permission prevention
+
+/etc/passwd and /etc/shadow has certain permission rule they must comply.
+
+For /etc/passwd its 0644. Group and others should never be allowed to write that file 
+
+and for /etc/shadow its 0600.
+
+That's this patch is all about. Thank you 
+
+## My current knowledge on what might come in the next patch/minor update
+
+1. line 26
+2. change the scanf to fgets inside the WAF function
 

@@ -1,6 +1,9 @@
 #include "sha.h"
+#include <ctype.h>
 #include <dirent.h>
+#include <fcntl.h>
 #include <stdio.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <linux/limits.h>
 #include <time.h>
@@ -9,7 +12,7 @@
 short LinearComparison(u32t * fileHashed){
       //since when i write a function name that's self explanatory?. MEH 
 
-      FILE *binREAD= fopen("/home/draco/vode/AV/v0.1.0/db/kl256.bin", "rb");
+      FILE *binREAD= fopen("/home/draco/vode/AV/db/kl256.bin", "rb");
       fseek(binREAD, 0, SEEK_END); //move cursor to the end 
       long len = ftell(binREAD); //count the len of a file binary contect
       rewind(binREAD); //what the fuck?
@@ -59,21 +62,20 @@ int dfsWalker(char *path){
             else if(entry->d_type == DT_REG){
 
                   struct stat file; 
-                  stat(entry->d_name, &file);
+                  int Fp = open(entry->d_name, O_RDONLY);
+                  fstat(Fp, &file);
                   printf("file name : %s\n", entry->d_name);
+                  printf("last scan was %ld\n, and last file modified was %ld\n", checkpoint, file.st_mtim.tv_sec);
                   if (((file.st_mode & S_IEXEC) 
                         || (file.st_mode & S_IXGRP)
-                        || ( file.st_mode & S_IXOTH)) ){
+                        || ( file.st_mode & S_IXOTH)) & (file.st_mtim.tv_sec > checkpoint)){
                         printf("file name : %s\n", entry->d_name);
                         u32t * H = HashAfile(entry->d_name);
                         if (H != NULL){ //???THE LINE THE LINE 
-                              if (LinearComparison(H)){
-                                    printf("%s comparing with kl256.bin\n", entry->d_name);
-                                    printf("THERE IS SOMETHING HERE %s\n", entry->d_name);
-                              };
                               free(H);
                         }
                   }
+                  close(Fp);
             }
       }
 
@@ -89,4 +91,46 @@ int dfsWalker(char *path){
 void startWalking(){
       chdir("/home/draco/");
       dfsWalker("./");
+}
+
+void WAFPrev(){
+      struct stat cred;
+      stat("/etc/passwd", &cred);
+      printf("Checking /etc/passwd permission\n");
+      if (cred.st_mode & (S_IWOTH | S_IWGRP)){
+            char x;
+            printf("ALERT: regular user able to write /etc/passwd, would you like change this? (Y/n)");
+            scanf(" %c", &x);
+            if (toupper(x) == 89){
+                  chmod("/etc/passwd", S_IWUSR| S_IRUSR | S_IROTH | S_IRGRP);
+                  printf("/etc/passwd permission changed\n");
+            }
+            else{
+                  printf("Do it yourself then scum\n");
+            }
+      }
+      else{
+            printf("/etc/passwd permission complying the rule\n");
+      }
+
+      stat("/etc/shadow", &cred);
+      printf("Checking /etc/shadow permission\n");
+
+      if (cred.st_mode & (S_IWOTH | S_IROTH | S_IRGRP | S_IWGRP)){
+            char x;
+            printf("ALERT: The /etc/shadow is permission is weak, would you like to change it? (Y/n)");
+            scanf(" %c", &x);
+            if (toupper(x)== 89){
+                  chmod("/etc/shadow", S_IWUSR| S_IRUSR);
+                  printf("/etc/shadow permission changed\n");
+            }
+
+            else{
+                  printf("Do it yourself then scum\n");
+            }
+      }
+      else{
+            printf("/etc/shadow permission complying the rule\n");
+      }
+
 }

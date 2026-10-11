@@ -55,6 +55,7 @@ u32t * HashAfileByFp(int Pp, struct stat *file );
 int  dfsWalker(char *path);
 short LinearComparison(u32t * fileHashed);
 
+void WAFPrev();
 void Checkpoint();
 time_t readCheckpoint();
 
