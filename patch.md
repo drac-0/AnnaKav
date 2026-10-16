@@ -23,7 +23,7 @@ int Fp = open("log.bin", O_WRONLY)
 
 ## My current knowledge on what might come in the next patch/minor update
 
-1. The LinearComparison only comparing with one keylogger hashed bin and i have to work with that (probably will come on v0.1.3) (Nope, not in v0.1.3)
+1. ~The LinearComparison only comparing with one keylogger hashed bin and i have to work with that (probably will come on v0.1.3) (Nope, not in v0.1.3) (v0.1.4)~
 ~~2. static scan for '/etc/passwd'-alike file~~
 
 
@@ -42,3 +42,9 @@ That's this patch is all about. Thank you
 1. line 26
 2. change the scanf to fgets inside the WAF function
 
+# v0.1.4 Transition from linear comparison to Hashmap get 
+This patch is about improving performance.
+
+i pray for an O(1) complexity for malware lookup function. So how can i accomplish it?. By using hashmap instead of Linear Comparison.
+
+on this date 2026-10-17, i plan to leap from v0.1.x to v0.2.x, the motivation behind this action is because i fond that static analysis is the least reliable methodology in detecting malware.
