@@ -1,7 +1,4 @@
 #include "sha.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 const u32t H2[64] = { 
       0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 
@@ -233,6 +230,7 @@ u32t * HashAfile(char * path){
             close(Pp);
             return H;
       }
+
 }
 
 u32t * HashAfileByFp(int Pp, struct stat *file ){

@@ -14,6 +14,15 @@
 
 typedef uint64_t u64t;
 typedef uint32_t u32t;
+typedef struct{
+      u32t sha[8];
+      char * name;
+}hashed;
+
+#ifndef SL
+#define SL 10
+#endif // !SL
+
 
 #ifndef rotate
 #define rotate(num, val) ((num >> val) | (num << (32 - val)))
@@ -45,7 +54,6 @@ typedef uint32_t u32t;
 #define MAAAYOR(x,y,z) ((x & y) ^ (x & z) ^ (y & z))
 #endif /* ifndef MAAAYOR(x,y,z) */
 
-
 unsigned char * Greg_bitLOC(unsigned char * Sinput, int len, u64t Tot);
 u32t *wordCOME(unsigned char *gBIT);
 u32t * sha256(unsigned char * hasi, size_t len, u64t fs);
@@ -60,5 +68,13 @@ void Checkpoint();
 time_t readCheckpoint();
 
 void startWalking();
+
+
+int hmload();
+hashed * get(u32t * sha);
+void insertToHm(u32t * sha, char *name);
+uint Ihash(u32t * sha);
+extern hashed * hashtable[SL] ;
+
 
 #endif // !SHA
